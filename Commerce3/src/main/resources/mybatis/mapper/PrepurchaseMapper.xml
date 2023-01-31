@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.digital3.sql.mapper.PrepurchaseMapper">
+			<!--prepurchaseId로 prepurchase 찾아오기-->
+			<select id="getPrepurchase" resultMap="PrepurchaseInfoMap"> 
+                     SELECT o.orderId, o.personId, o.addressId, o.phoneId, pp.cartId
+                     FROM 	prepurchase o, partyprepurchase pp
+                     WHERE	o.orderId = #{orderId}
+                     		and o.orderId = pp.orderId 
+           	</select>
+		
+		
+			<!--personId로 전체 prepurchase 찾아오기-->
+			 <select id="getAllPrepurchase" resultMap="PrepurchaseInfoMap"> 
+                     SELECT o.orderId, o.personId, o.addressId, o.phoneId, pp.cartId
+                     FROM 	prepurchase o, partyprepurchase pp
+                     WHERE	o.personId = #{personId}
+                     		and o.orderId = pp.orderId
+           	</select>
+           	 <resultMap id="PrepurchaseInfoMap" type="com.digital3.sql.vo.PrepurchaseVO"> 
+				<id column="orderId" jdbcType="BIGINT" property="orderId" /> 
+				<result column="personId" jdbcType="BIGINT" property="personId" javaType="long" />
+				<result column="addressId" jdbcType="BIGINT" property="addressId" javaType="long" />
+				<result column="phoneId" jdbcType="BIGINT" property="phoneId" javaType="long" />
+				<collection property="cartIdList" ofType="long">
+					<result property="cartId" jdbcType="BIGINT" column="cartId" /> 
+				</collection>	
+			</resultMap>
+			
+			<!--Prepurchase, partyPrepurchase에 저장-->
+			<insert id="addPurchaseDetail" parameterType="com.digital3.sql.vo.PrepurchaseVO"> 
+				INSERT INTO Prepurchase (orderId, personId, addressId, phoneId) 
+				VALUES (#{orderId}, #{personId}, #{addressId}, #{phoneId}) 
+			</insert> 
+			
+			<!--partyAddress 테이블에 저장-->
+			<insert id="insertPartyPrepurchase" parameterType="com.digital3.sql.vo.PartyPrepurchaseVO"> 
+				INSERT INTO PartyPrepurchase (orderId, cartId) 
+				VALUES (#{orderId}, #{cartId}) 
+			</insert> 
+		
+</mapper>

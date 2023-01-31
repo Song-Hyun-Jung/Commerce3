@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.digital3.sql.mapper.PurchaseMapper">
+			<!--구매 추가-->
+            <insert id="insertPurchase" parameterType="com.digital3.sql.vo.PurchaseVO"> 
+				INSERT INTO Purchase (purchaseId, orderId, personId) 
+				VALUES (#{purchaseId}, #{orderId}, #{personId}) 
+			</insert>
+			
+			<!--구매내역 가져오기-->
+			<select id="getPurchaseHistory" parameterType="long" resultType="com.digital3.sql.vo.PurchaseVO">
+				SELECT purchaseId, orderId, personId
+				FROM Purchase
+				WHERE personId = #{personId}
+			</select>
+</mapper>

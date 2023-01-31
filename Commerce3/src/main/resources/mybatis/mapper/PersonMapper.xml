@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.digital3.sql.mapper.PersonMapper">
+		<!--회원 가입 여부(로그인 아이디로 회원검색)-->
+          <select id="getPerson" resultMap="PersonInfoMap"> 
+                     SELECT person.personId ,personName ,gender ,loginId ,password
+                     		,address.addressId, address.addressDetail
+                     		,phone.phoneId, phone.phoneNumber
+                     FROM
+                                person, partyaddress, address, partyphone, phone
+                     WHERE
+                                loginId = #{loginId}
+                                and person.personId = partyaddress.personId
+                                and address.addressId = partyaddress.addressId
+                                and person.personId = partyphone.personId
+                                and phone.phoneId = partyphone.phoneId
+           </select> 
+           <resultMap id="PersonInfoMap" type="com.digital3.sql.vo.PersonVO"> 
+				<id column="personId" jdbcType="BIGINT" property="personId" /> 
+				<result column="personName" jdbcType="VARCHAR" property="personName" javaType="string" />
+				<result column="gender" jdbcType="VARCHAR" property="gender" javaType="string" />
+				<result column="loginId" jdbcType="VARCHAR" property="loginId" javaType="string" />
+				<result column="password" jdbcType="VARCHAR" property="password" javaType="string" />
+				<collection property="addressList" ofType="com.digital3.sql.vo.AddressVO">
+					<id property="addressId" jdbcType="BIGINT" column="addressId" /> 
+					<result property="addressDetail" jdbcType="VARCHAR" column="addressDetail" /> 
+				</collection>
+				<collection property="phoneList" ofType="com.digital3.sql.vo.PhoneVO">
+					<id property="phoneId" column="phoneId" /> 
+					<result property="phoneNumber" column="phoneNumber" /> 
+				</collection>		
+			</resultMap>
+			
+			<!--회원가입 person 테이블에 저장-->
+			<insert id="signUp" parameterType="com.digital3.sql.vo.PersonVO"> 
+				INSERT INTO Person (personId, personName, gender, loginId, password) 
+				VALUES (#{personId}, #{personName}, #{gender}, #{loginId}, #{password}) 
+			</insert> 
+			
+			<!--partyAddress 테이블에 저장-->
+			<insert id="insertPartyAddress" parameterType="com.digital3.sql.vo.PartyAddressVO"> 
+				INSERT INTO PartyAddress (personId, addressId) 
+				VALUES (#{personId}, #{addressId}) 
+			</insert> 
+			
+			<!--partyPhone 테이블 저장-->
+			<insert id="insertPartyPhone" parameterType="com.digital3.sql.vo.PartyPhoneVO"> 
+				INSERT INTO PartyPhone (personId, phoneId) 
+				VALUES (#{personId}, #{phoneId}) 
+			</insert> 
+			
+			
+			
+</mapper>

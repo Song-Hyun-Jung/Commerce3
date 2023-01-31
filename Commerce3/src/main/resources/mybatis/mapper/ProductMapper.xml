@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.digital3.sql.mapper.ProductMapper">
+			<!--Product 테이블에서 productName으로 Product 찾아오기-->
+			 <select id="getProduct" resultType="com.digital3.sql.vo.ProductVO"> 
+                     SELECT productId, categoryId, price, productName
+                     FROM 	product
+                     WHERE	productName = #{productName}
+                             
+           </select>
+           
+           <!--Product 테이블에서 productId으로 Product 찾아오기-->
+			 <select id="getProductById" resultType="com.digital3.sql.vo.ProductVO"> 
+                     SELECT productId, categoryId, price, productName
+                     FROM 	product
+                     WHERE	productId = #{productId}
+                             
+           </select>
+           
+           <!--키워드를 포함한 상품들 검색-->
+           <select id="searchByKeyword" resultType="com.digital3.sql.vo.ProductVO"> 
+                     SELECT productId, categoryId, price, productName
+                     FROM 	product
+                     WHERE	productName LIKE '%'||#{keyword}||'%'
+           </select>
+           
+           <!--검색 카테고리에 해당하는 상품들 검색-->
+            <select id="searchByCategory" resultType="com.digital3.sql.vo.ProductVO"> 
+                     SELECT p.productId, p.categoryId, p.price, p.productName
+                     FROM 	product p, category c
+                     WHERE	p.categoryId = c.categoryId
+                     		and c.categoryName = #{categoryName}
+            </select>
+           
+            <!--상품 등록시 product table에 저장-->
+            <insert id="insertProduct" parameterType="com.digital3.sql.vo.ProductVO"> 
+				INSERT INTO Product (productId, categoryId, price, productName) 
+				VALUES (#{productId}, #{categoryId}, #{price}, #{productName}) 
+			</insert>
+</mapper>
